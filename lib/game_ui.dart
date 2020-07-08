@@ -30,8 +30,7 @@ class GameUIState extends State<GameUI> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    final appBar = AppBar(
         elevation: 0.0,
         title: Text("TicTacToe"),
         actions: <Widget>[
@@ -39,13 +38,17 @@ class GameUIState extends State<GameUI> {
               icon: Icon(Icons.list),
               onPressed: () => Navigator.pushNamed(context, "/statistic"))
         ],
-      ),
-      body: Stack(alignment: Alignment(0, 0.9), children: <Widget>[
+      );
+    return Scaffold(
+      appBar: appBar,
+      body: Stack(alignment: Alignment(0, 0.95), children: <Widget>[
         Container(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
           child: GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3, crossAxisSpacing: 8.0),
+                crossAxisCount: 3, crossAxisSpacing: 8.0, childAspectRatio: (MediaQuery.of(context).size.width/3)/((MediaQuery.of(context).size.height - appBar.preferredSize.height - MediaQuery.of(context).padding.top) / 3)),
             itemBuilder: buildCard,
             itemCount: 9,
             primary: true,
@@ -68,8 +71,13 @@ class GameUIState extends State<GameUI> {
 
   Widget buildCard(BuildContext context, int index) {
     return GestureDetector(
-      child: Card(child: Image.asset(variants[_game.square[index] + 1])),
-      onTap: () => this.isCross && this._game.square[index] ==-1 ? playGame(index) : null,
+      onTap: () => this.isCross && this._game.square[index] == -1
+          ? playGame(index)
+          : null,
+      child: Card(
+        child: Container(
+          child: Image.asset(variants[_game.square[index] + 1])),
+      ),
     );
   }
 
